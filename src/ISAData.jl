@@ -36,8 +36,8 @@ module ISAData
 	(0.4136571526878796 kg m^-3, 26510.092578167572 Pa, 223.25492665430897 K, 1.461852633009453e-5 Pa s)
 	```
 	"""
-	function ISAdata(h::Float64)
-		
+	function ISAdata(h::U) where U <: Real
+		#=
 		a :: Float64 = 0.0
 		T0 :: Float64 = 0.0
 		P0 :: Float64 = 0.0
@@ -45,7 +45,14 @@ module ISAData
 		P :: Float64 = 0.0
 		ρ :: Float64 = 0.0
 		μ :: Float64 = 0.0
-		
+		=#
+		a :: Float64 = 0.0
+		T0 :: Float64 = 0.0
+		P0 :: Float64 = 0.0
+		T = 0.0
+		P = 0.0
+		ρ = 0.0
+		μ = 0.0
 		hgeoP = RE - RE^2/(RE+h)
 		
 		if hgeoP >= -610
@@ -123,17 +130,14 @@ module ISAData
 		
 	end
 	
-	function ISAdata(h::T) where T <: Real
-		return ISAdata(float(h))
-	end
 	
-	function ISAdata(h::T) where T <: Quantity
+	function ISAdata(h::U) where U <: Quantity
 		hi = uconvert(u"m", h)
 		ρi, Pi, Ti, μi = ISAdata(ustrip(hi))
 		return (ρi*u"kg/m^3", Pi*u"Pa", Ti*u"K", μi*u"Pa*s")
 	end
 	
-	function Ω(Ts::Float64)
+	function Ω(Ts)
 		return 1.16145*Ts^(-0.14874) + 0.52487*exp(-0.7732*Ts) + 2.16178*exp(-2.43787*Ts)
 	end
 	
